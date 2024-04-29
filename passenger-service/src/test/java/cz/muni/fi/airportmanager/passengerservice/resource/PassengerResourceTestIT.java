@@ -51,6 +51,11 @@ class PassengerResourceTestIT {
     @Test
     void shouldGetEmptyListOfPassengers() {
         // TODO implement this test
+        given().when()
+                .get()
+                .then()
+                .statusCode(200)
+                .body(is("[]"));
     }
 
 
@@ -58,6 +63,13 @@ class PassengerResourceTestIT {
     void shouldDeleteAllPassengers() {
         // TODO implement this test
         // create some passengers and then delete them all
+        CreatePassengerDto testPassenger = createTestPassengerDto();
+        savePassenger(testPassenger);
+
+        given().when()
+                .delete()
+                .then()
+                .statusCode(200);
     }
 
 
@@ -65,18 +77,41 @@ class PassengerResourceTestIT {
     void shouldGetPassengersForFlight() {
         // TODO implement this test
         // create a passenger and then get the list of passengers for the flight
+        CreatePassengerDto testPassenger = createTestPassengerDto();
+        var id = savePassenger(testPassenger);
+
+        given().when()
+                .get("/flight/" + id)
+                .then()
+                .statusCode(200)
+                .body("size()", is(1));
     }
 
     @Test
     void shouldGetEmptyListOfPassengersForFlightWhenNoPassengers() {
         // TODO implement this test
         // get the list of passengers for a flight that has no passengers
+        long id = 99L;
+
+        given().when()
+                .get("/flight/" + id)
+                .then()
+                .statusCode(200)
+                .body(is("[]"));
     }
 
     @Test
     void shouldGetEmptyNotificationsForPassenger() {
         // TODO implement this test
         // get the list of notifications for a passenger that has no notifications
+        CreatePassengerDto testPassenger = createTestPassengerDto();
+        var id = savePassenger(testPassenger);
+
+        given().when()
+                .get("/" + id + "/notifications")
+                .then()
+                .statusCode(200)
+                .body("size()", is(0));
     }
 
     private CreatePassengerDto createTestPassengerDto() {
